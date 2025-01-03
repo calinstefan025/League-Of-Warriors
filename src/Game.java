@@ -16,10 +16,18 @@ public class Game {
     public static final String YELLOW = "\u001B[33m";
     public static final String CYAN = "\u001B[36m";
 
+    // singleton pattern (lazy initialization)
+    private static Game instance = null;
 
-
-    public Game() {
+    private Game() {
         this.isRunning = true;
+    }
+
+    public static Game getInstance() {
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
     }
 
     public void run() {
