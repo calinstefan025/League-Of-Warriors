@@ -72,7 +72,12 @@ public class JsonInput {
                     System.out.println("! This account doesn't have characters !");
                 }
 
-                Account.Information information = new Account.Information(credentials, favoriteGames, name, country);
+                Account.Information information = new Account.Information.Builder()
+                        .setCredentials(credentials)
+                        .setFavoriteGames(favoriteGames)
+                        .setPlayerName(name)
+                        .setPlayerCountry(country)
+                        .build();
                 Account account = new Account(characters, gamesNumber, information);
                 accounts.add(account);
             }

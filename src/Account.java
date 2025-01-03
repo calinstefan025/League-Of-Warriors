@@ -19,11 +19,11 @@ public class Account {
         public String playerName;
         public String playerCountry;
 
-        public Information(Credentials playerCredentials, SortedSet<String> favoriteGames, String playerName, String playerCountry) {
-            this.playerCredentials = playerCredentials;
-            this.favoriteGames = favoriteGames;
-            this.playerName = playerName;
-            this.playerCountry = playerCountry;
+        private Information(Builder builder) {
+            this.playerCredentials = builder.playerCredentials;
+            this.favoriteGames = builder.favoriteGames;
+            this.playerName = builder.playerName;
+            this.playerCountry = builder.playerCountry;
         }
 
         public Credentials getPlayerCredentials() {
@@ -40,6 +40,37 @@ public class Account {
 
         public String getPlayerCountry() {
             return playerCountry;
+        }
+
+        public static class Builder {
+            private Credentials playerCredentials;
+            private SortedSet<String> favoriteGames;
+            private String playerName;
+            private String playerCountry;
+
+            public Builder setCredentials(Credentials playerCredentials) {
+                this.playerCredentials = playerCredentials;
+                return this;
+            }
+
+            public Builder setFavoriteGames(SortedSet<String> favoriteGames) {
+                this.favoriteGames = favoriteGames;
+                return this;
+            }
+
+            public Builder setPlayerName(String playerName) {
+                this.playerName = playerName;
+                return this;
+            }
+
+            public Builder setPlayerCountry(String playerCountry) {
+                this.playerCountry = playerCountry;
+                return this;
+            }
+
+            public Information build() {
+                return new Information(this);
+            }
         }
     }
 
