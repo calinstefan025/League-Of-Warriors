@@ -60,12 +60,7 @@ public class JsonInput {
                         Integer experience = (Integer) charJson.get("experience");
 
                         Character newCharacter = null;
-                        if (profession.equals("Warrior"))
-                            newCharacter = new Warrior(cname, experience, lvl);
-                        if (profession.equals("Rogue"))
-                            newCharacter = new Rogue(cname, experience, lvl);
-                        if (profession.equals("Mage"))
-                            newCharacter = new Mage(cname, experience, lvl);
+                        newCharacter = CharacterFactory.createCharacter(profession, cname, experience, lvl);
                         characters.add(newCharacter);
                     }
                 } catch (Exception e) {
