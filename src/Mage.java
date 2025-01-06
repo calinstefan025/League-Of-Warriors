@@ -23,6 +23,7 @@ public class Mage extends Character {
         if (this.getDexterity() + this.getStrength() > 32) {
             if (rand.nextBoolean()) {
                 damage /= 2;
+                System.out.println("Damage injumatatit!");
             }
         }
         int currentHealth = this.getHealth();
@@ -31,7 +32,6 @@ public class Mage extends Character {
             currentHealth = 0;
         }
         this.setHealth(currentHealth);
-        System.out.println(this.getCharacterName() + " a primit: " + damage + " damage.");
     }
 
     @Override
@@ -46,7 +46,6 @@ public class Mage extends Character {
             }
         }
 
-        System.out.println(this.getCharacterName() + " a dat: " + baseDamage + " damage.");
         return baseDamage;
     }
 }

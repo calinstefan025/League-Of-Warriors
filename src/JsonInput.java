@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 public class JsonInput {
     public static ArrayList<Account> deserializeAccounts() {
-        String accountPath = "C:\\Users\\CALIN STEFAN\\Desktop\\TemaPOO2\\accounts.json";
+        String accountPath = "/home/calin/Desktop/TemaPOO2/accounts.json";
         try {
             String content = new String((Files.readAllBytes(Paths.get(accountPath))));
             JSONObject obj = new JSONObject(content);

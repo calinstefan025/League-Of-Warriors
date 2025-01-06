@@ -22,6 +22,7 @@ public class Rogue extends Character {
         if (this.getCharisma() + this.getStrength() > 32) {
             if (rand.nextBoolean()) {
                 damage /= 2;
+                System.out.println("Damage injumatatit!");
             }
         }
 

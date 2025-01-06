@@ -24,6 +24,7 @@ public class Warrior extends Character {
         if (this.getDexterity() + this.getCharisma() > 32) {
             if (rand.nextBoolean()) {
                 damage /= 2;
+                System.out.println("Damage injumatatit!");
             }
         }
 
@@ -37,8 +38,6 @@ public class Warrior extends Character {
         }
 
         this.setHealth(currentHealth);
-
-        System.out.println(this.getCharacterName() + " a primit: " + damage + " damage.");
     }
 
     @Override
@@ -53,7 +52,6 @@ public class Warrior extends Character {
             }
         }
 
-        System.out.println(this.getCharacterName() + " a dat: " + baseDamage + " damage.");
         return baseDamage;
     }
 }

@@ -2,8 +2,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public abstract class Entity implements Battle {
-    private ArrayList<Spell> abilities; // decat pentru caractere, nu pentru inamici
+public abstract class Entity implements Element<Entity>, Battle {
+    private ArrayList<Spell> abilities;
     private int health;
     private int maxHealth;
     private int mana;
@@ -165,100 +165,91 @@ public abstract class Entity implements Battle {
     }
 
     public Spell selectAbility(boolean isPlayer) {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Spell> abilities = this.getAbilities();
+        if (abilities.isEmpty()) {
+            if (isPlayer) {
+                System.out.println("Nu ai abilitati disponibile");
+            } else {
+                System.out.println("Inamicul nu are abilitati disponibile.");
+            }
+            return null;
+        }
 
         if (!isPlayer) {
             Random rand = new Random();
-            // alegem o abilitate random si daca random > abilities.size() atunci alegem sa dam damage normal
-            int choice = rand.nextInt(this.abilities.size() + 2);
-            if (choice >= this.abilities.size()) {
-                System.out.println("Inamicul da damage normal.");
+            int choice = rand.nextInt(abilities.size() + 2);
+            if (choice >= abilities.size()) {
+                System.out.println("Inamicul alege atac normal.");
                 return null;
             }
 
-            if (abilities.isEmpty()) {
-                System.out.println("Inamicul nu are abilitati disponibile.");
-                return null;
-            }
-
-            Spell selectedAbility = this.abilities.get(choice);
-            if (selectedAbility.getManaCost() > this.getMana()) {
-                System.out.println("Inamicul nu are suficienta mana pentru abilitate. Da damage normal.");
+            Spell selectedAbility = abilities.get(choice);
+            if (selectedAbility.getManaCost() > mana) {
+                System.out.println("Inamicul nu are suficienta mana pentru abilitate. \nAtac normal.");
                 return null;
             }
 
             return selectedAbility;
         }
 
-        if (abilities.isEmpty()) {
-            System.out.println("Nu ai abilitati disponibile.");
-            return null;
-        }
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Alege o abilitate (introdu numarul):");
+            for (int i = 0; i < abilities.size(); i++) {
+                System.out.println(i + ": " + abilities.get(i));
+            }
 
-        String input;
-        int choice = -1;
-
-        while (choice < 0 || choice >= abilities.size()) {
-            input = scanner.nextLine();
+            String input = scanner.nextLine();
             try {
-                choice = Integer.parseInt(input);
+                int choice = Integer.parseInt(input);
+                if (choice >= 0 && choice < abilities.size()) {
+                    Spell selectedAbility = abilities.get(choice);
+                    return selectedAbility;
+                } else {
+                    System.out.println("Numar invalid. Incearca din nou.");
+                }
             } catch (NumberFormatException e) {
-                System.out.println("Introdu un numar valid.");
+                System.out.println("Input invalid. Introdu un numar.");
             }
         }
-
-        Spell selectedAbility = abilities.get(choice);
-        if (selectedAbility.getManaCost() > this.getMana()) {
-            System.out.println("Nu ai suficienta mana. Dai damage normal.");
-            return null;
-        }
-
-        return selectedAbility;
     }
+
 
     public void useAbility(Spell ability, Entity target) {
         if (ability == null) {
-            int damage = this.getDamage(); // damage normal
-            System.out.println("Total damage aplicat: " + damage);
+            int damage = this.getDamage();
+            System.out.println("Damage normal: " + damage + " damage!");
             target.receiveDamage(damage);
             return;
         }
 
-        int normalDamage = this.getDamage();
-
-        if (ability instanceof Fire && target.isImmuneToFire()) {
-            System.out.println("Imun la foc.");
-            System.out.println("Total damage aplicat: " + normalDamage);
-            target.receiveDamage(normalDamage);
+        if (ability.getManaCost() > this.getMana()) {
+            int damage = this.getDamage();
+            System.out.println("NO SUFFICIENT MANA! \nDamage normal: " + damage + " damage!");
+            target.receiveDamage(damage);
             return;
         }
 
-        if (ability instanceof Ice && target.isImmuneToIce()) {
-            System.out.println("Imun la gheață.");
-            System.out.println("Total damage aplicat: " + normalDamage);
-            target.receiveDamage(normalDamage);
-            return;
-        }
-
-        if (ability instanceof Earth && target.isImmuneToEarth()) {
-            System.out.println("Imun la pământ.");
-            System.out.println("Total damage aplicat: " + normalDamage);
-            target.receiveDamage(normalDamage);
-            return;
-        }
+        target.accept(ability);
 
         int spellDamage = ability.getDamageDone();
-        int totalDamage = normalDamage + spellDamage;
+        int normalDamage = this.getDamage();
+        int totalDamage = spellDamage + normalDamage;
+
+        target.receiveDamage(totalDamage);
 
         this.setMana(this.getMana() - ability.getManaCost());
         if (this.getMana() < 0) {
             this.setMana(0);
         }
 
-        this.abilities.remove(ability);
+        abilities.remove(ability);
+        System.out.println("Damage normal: " + normalDamage + " damage!");
+        System.out.println("Damage abilitate: " + spellDamage + " damage!");
+        System.out.println("Damage total (abilitate + normal): " + totalDamage + " damage!");
+    }
 
-        System.out.println("Total damage aplicat: " + totalDamage);
-        target.receiveDamage(totalDamage);
+    @Override
+    public void accept(Visitor<Entity> visitor) {
+        visitor.visit(this);
     }
 }

@@ -240,11 +240,10 @@ public class Grid extends ArrayList<ArrayList<Cell>> {
     // bataia are loc pe ture
     // jucatorul alege o abilitate si o foloseste
     // inamicul alege o abilitate si o foloseste
-    public void battle(Character player, Enemy enemy){
+    public void battle(Character player, Enemy enemy) {
         Scanner scanner = new Scanner(System.in);
 
-        while (player.getHealth() > 0 && enemy.getHealth() > 0){
-
+        while (player.getHealth() > 0 && enemy.getHealth() > 0) {
             System.out.println("\nAlege modul de atac:");
             System.out.println("1. Atac normal");
             System.out.println("2. Folosire abilitate");
@@ -252,52 +251,61 @@ public class Grid extends ArrayList<ArrayList<Cell>> {
             String choice = scanner.nextLine();
 
             if (choice.equals("1")) {
+                System.out.println("\nAi ales atac normal.");
                 player.useAbility(null, enemy);
             } else if (choice.equals("2")) {
-                ArrayList<Spell> abilitati = player.getAbilities();
-                System.out.println("\nAlege o abilitate:");
-                for (int i = 0 ; i < abilitati.size() ; i++){
-                    System.out.println(i + ": " + abilitati.get(i));
+                System.out.println("\nAlege o abilitate (introdu numarul):");
+                for (int i = 0; i < player.getAbilities().size(); i++) {
+                    System.out.println(i + ": " + player.getAbilities().get(i));
                 }
-
-                Spell selectedAbility = player.selectAbility(true);
-                if (selectedAbility != null){
-                    System.out.println("Ai ales: " + selectedAbility.toString());
+                String input = scanner.nextLine();
+                try {
+                    int abilityIndex = Integer.parseInt(input);
+                    if (abilityIndex >= 0 && abilityIndex < player.getAbilities().size()) {
+                        Spell selectedAbility = player.getAbilities().get(abilityIndex);
+                        System.out.println("Ai ales: " + selectedAbility);
+                        player.useAbility(selectedAbility, enemy);
+                    } else {
+                        System.out.println("Abilitate invalida. Atac normal.");
+                        player.useAbility(null, enemy);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Input invalid. Introdu un numar.");
                 }
-
-                player.useAbility(selectedAbility, enemy);
             } else {
-                System.out.println("Incearca din nou");
+                System.out.println("Optiune invalida. Incearca din nou.");
                 continue;
             }
 
-            if (enemy.getHealth() <= 0){
-                System.out.println("Inamicul a fost invins!");
+            System.out.println(GREEN + "\nViata ta: " + RESET + player.getHealth() + " / " + player.getMaxHealth());
+            System.out.println(GREEN + "Mana ta: " + RESET + player.getMana() + " / " + player.getMaxMana());
+            System.out.println(RED + "Viata inamic: " + RESET + enemy.getHealth() + " / " + enemy.getMaxHealth());
+            System.out.println(RED + "Mana inamic: " + RESET + enemy.getMana() + " / " + enemy.getMaxMana());
+
+            if (enemy.getHealth() <= 0) {
+                System.out.println("\nInamicul a fost invins!");
                 break;
             }
 
-            System.out.println(GREEN + "\nViata ta: " + RESET + player.getHealth() + " / " + player.getMaxHealth());
-            System.out.println(GREEN +"Mana ta: " + RESET + player.getMana() + " / " + player.getMaxMana());
-            System.out.println(RED +"Viata inamic: " + RESET + enemy.getHealth() + " / " + enemy.getMaxHealth());
-            System.out.println(RED +"Mana inamic: " + RESET + enemy.getMana() + " / " + enemy.getMaxMana());
-
-            System.out.println("\nInamicul ataca:");
+            System.out.println("\nInamicul ataca!");
             Spell enemyAbility = enemy.selectAbility(false);
-
-            if (enemyAbility != null){
-                System.out.println("Inamicul foloseste: " + enemyAbility.toString());
+            if (enemyAbility != null) {
+                System.out.println("Inamicul foloseste: " + enemyAbility);
+                enemy.useAbility(enemyAbility, player);
+            } else {
+                int damage = enemy.getDamage();
+                System.out.println("Total damage aplicat de inamic: " + damage);
+                player.receiveDamage(damage);
             }
-            enemy.useAbility(enemyAbility, player);
 
             System.out.println(GREEN + "\nViata ta: " + RESET + player.getHealth() + " / " + player.getMaxHealth());
-            System.out.println(GREEN +"Mana ta: " + RESET + player.getMana() + " / " + player.getMaxMana());
-            System.out.println(RED +"Viata inamic: " + RESET + enemy.getHealth() + " / " + enemy.getMaxHealth());
-            System.out.println(RED +"Mana inamic: " + RESET + enemy.getMana() + " / " + enemy.getMaxMana());
+            System.out.println(GREEN + "Mana ta: " + RESET + player.getMana() + " / " + player.getMaxMana());
+            System.out.println(RED + "Viata inamic: " + RESET + enemy.getHealth() + " / " + enemy.getMaxHealth());
+            System.out.println(RED + "Mana inamic: " + RESET + enemy.getMana() + " / " + enemy.getMaxMana());
 
-            if (player.getHealth() <= 0){
-                System.out.println("Ai fost invins!");
+            if (player.getHealth() <= 0) {
+                System.out.println("\nAi fost invins!");
                 dead = true;
-                break;
             }
         }
     }

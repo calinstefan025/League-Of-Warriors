@@ -1,11 +1,10 @@
-public abstract class Spell {
-    private final int damage;
-    private final int manaCost;
-    private final String type;
+public abstract class Spell implements Visitor<Entity> {
+    private int damage;
+    private int manaCost;
+    private String type;
 
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
-    public static final String GREEN = "\u001B[32m";
     public static final String CYAN = "\u001B[36m";
     public static final String YELLOW = "\u001B[33m";
 
@@ -13,6 +12,10 @@ public abstract class Spell {
         this.damage = damage;
         this.manaCost = manaCost;
         this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public int getDamageDone() {
@@ -23,8 +26,20 @@ public abstract class Spell {
         return manaCost;
     }
 
-    public String getType() {
-        return type;
+    @Override
+    public void visit(Entity entity) {
+        if (entity.isImmuneToFire() && this instanceof Fire) {
+            System.out.println("Imun la Fire!");
+            this.damage = 0;
+        }
+        if (entity.isImmuneToIce() && this instanceof Ice) {
+            System.out.println("Imun la Ice!");
+            this.damage = 0;
+        }
+        if (entity.isImmuneToEarth() && this instanceof Earth) {
+            System.out.println("Imun la Earth!");
+            this.damage = 0;
+        }
     }
 
     @Override
@@ -48,4 +63,5 @@ public abstract class Spell {
                 ", manaCost= " + manaCost +
                 " ]" + RESET;
     }
+
 }
