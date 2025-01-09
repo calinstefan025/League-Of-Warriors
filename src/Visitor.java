@@ -1,3 +1,3 @@
-public interface Visitor<T> {
+public interface Visitor<T extends Entity> {
     void visit(T element);
 }

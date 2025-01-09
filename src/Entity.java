@@ -179,6 +179,7 @@ public abstract class Entity implements Element<Entity>, Battle {
             int choice = rand.nextInt(abilities.size() + 2);
             if (choice >= abilities.size()) {
                 System.out.println("Inamicul alege atac normal.");
+                System.out.println("Index ales: " + choice);
                 return null;
             }
 

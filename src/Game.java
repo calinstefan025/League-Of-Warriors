@@ -20,7 +20,12 @@ public class Game {
     private static Game instance = null;
 
     private Game() {
+        Random random = new Random();
         this.isRunning = true;
+        int rows = random.nextInt(6) + 5;
+        int cols = random.nextInt(6) + 5;
+        this.grid = Grid.generateGrid(5, 5, true);
+        grid.setPlayerCharacter(playerCharacter);
     }
 
     public static Game getInstance() {
@@ -28,6 +33,14 @@ public class Game {
             instance = new Game();
         }
         return instance;
+    }
+
+    public Grid getGrid() {
+        return grid;
+    }
+
+    public Character getPlayerCharacter() {
+        return playerCharacter;
     }
 
     public void run() {
@@ -138,16 +151,16 @@ public class Game {
         try {
             switch (choice) {
                 case "w":
-                    grid.goNorth();
+                    grid.goNorth(false);
                     break;
                 case "s":
-                    grid.goSouth();
+                    grid.goSouth(false);
                     break;
                 case "d":
-                    grid.goEast();
+                    grid.goEast(false);
                     break;
                 case "a":
-                    grid.goWest();
+                    grid.goWest(false);
                     break;
                 case "q":
                     isRunning = false;

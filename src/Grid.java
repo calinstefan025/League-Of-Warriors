@@ -122,51 +122,63 @@ public class Grid extends ArrayList<ArrayList<Cell>> {
         currentCell = this.get(i).get(j);
     }
 
-    public void goNorth() throws ImpossibleMove {
+    public void goNorth(boolean ui) throws ImpossibleMove {
         if (currentCell.getX() == 0) {
             throw new ImpossibleMove("Nu poti merge la Nord");
         }
         currentCell.setVisitedCell(true);
         move(currentCell.getX() - 1, currentCell.getY());
 
-        checkCell();
+        checkCell(ui);
     }
 
-    public void goSouth() throws ImpossibleMove{
+    public void goSouth(boolean ui) throws ImpossibleMove{
         if (currentCell.getX() == rows - 1) {
             throw new ImpossibleMove("Nu poti merge la Sud");
         }
         currentCell.setVisitedCell(true);
         move(currentCell.getX() + 1, currentCell.getY());
 
-        checkCell();
+        checkCell(ui);
     }
 
-    public void goWest() throws ImpossibleMove {
+    public void goWest(boolean ui) throws ImpossibleMove {
         if (currentCell.getY() == 0) {
             throw new ImpossibleMove("Nu poti merge la Vest");
         }
         currentCell.setVisitedCell(true);
         move(currentCell.getX(), currentCell.getY() - 1);
 
-        checkCell();
+        checkCell(ui);
     }
 
-    public void goEast() throws ImpossibleMove {
+    public void goEast(boolean ui) throws ImpossibleMove {
         if (currentCell.getY() == cols - 1) {
             throw new ImpossibleMove("Nu poti merge la Est");
         }
         currentCell.setVisitedCell(true);
         move(currentCell.getX(), currentCell.getY() + 1);
 
-        checkCell();
+        checkCell(ui);
     }
 
     // in functie de tipul celulei:
     // - daca e inamic, generam inamicul cu valori random si ne batem cu el
     // - daca e sanctuar, ne regeneram mana si viata
     // - daca e portal, generam harta noua si dam levelup
-    public void checkCell(){
+    public void checkCell(boolean ui){
+        if (ui) {
+            if (currentCell.getType() == CellEntityType.ENEMY && !currentCell.isVisited()) {
+                System.out.println("\nAi intalnit un inamic!\n");
+            }
+            if (currentCell.getType() == CellEntityType.SANCTUARY && !currentCell.isVisited()) {
+                System.out.println("\nAi gasit un sanctuar!\n");
+            }
+            if (currentCell.getType() == CellEntityType.PORTAL) {
+                System.out.println("\nAi gasit un portal!\n");
+            }
+            return;
+        }
         if (currentCell.getType() == CellEntityType.ENEMY && !currentCell.isVisited()){
             System.out.println("\nAi intalnit un inamic!\n");
             System.out.println(YELLOW + " ********************** STATISTICI INITIALE: **********************\n" + RESET);
