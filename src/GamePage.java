@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class GamePage extends JPanel {
@@ -123,18 +121,18 @@ public class GamePage extends JPanel {
 
                 if (cell == grid.currentCell) {
                     if (cell.getType() == CellEntityType.PORTAL) {
-                        regenerateMap();
+                        regenMap();
                         return;
                     } else if (cell.getType() == CellEntityType.SANCTUARY) {
-                        regenerateAtSanctuary();
+                        regenSanct();
                     } else if (cell.getType() == CellEntityType.ENEMY) {
                         Enemy enemy = grid.generateEnemy();
                         controller.showBattlePage(playerCharacter, enemy, grid);
                     }
-                    cellButton.setText(getCellDisplayText(cell));
+                    cellButton.setText(getCellText(cell));
                     cellButton.setBackground(Color.ORANGE);
                 } else if (cell.isVisited()) {
-                    cellButton.setText(getCellDisplayText(cell));
+                    cellButton.setText(getCellText(cell));
                     cellButton.setBackground(Color.WHITE);
                 } else {
                     cellButton.setText("?");
@@ -150,7 +148,7 @@ public class GamePage extends JPanel {
         gridPanel.repaint();
     }
 
-    private void regenerateAtSanctuary() {
+    private void regenSanct() {
         Random rand = new Random();
         int regenerareMana = rand.nextInt(150);
         int regenerareViata = rand.nextInt(100);
@@ -162,7 +160,7 @@ public class GamePage extends JPanel {
         updateCharacterDetails();
     }
 
-    private void regenerateMap() {
+    private void regenMap() {
         Random random = new Random();
         int rows = random.nextInt(6) + 5;
         int cols = random.nextInt(6) + 5;
@@ -214,7 +212,7 @@ public class GamePage extends JPanel {
         manaLabel.setText("Mana: " + playerCharacter.getMana() + " / " + playerCharacter.getMaxMana());
     }
 
-    private String getCellDisplayText(Cell cell) {
+    private String getCellText(Cell cell) {
         switch (cell.getType()) {
             case PLAYER:
                 return "F";
