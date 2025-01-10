@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class AbilitiesPage extends JDialog {
     private GameController controller;
@@ -22,13 +23,35 @@ public class AbilitiesPage extends JDialog {
         JLabel titleLabel = new JLabel("Select an Ability", SwingConstants.CENTER);
         add(titleLabel, BorderLayout.NORTH);
 
-        JPanel abilitiesPanel = new JPanel(new GridLayout(0, 6, 10, 10));
+        JPanel abilitiesPanel = new JPanel(new GridLayout(0, 6, 5, 5));
         ArrayList<Spell> abilities = playerCharacter.getAbilities();
 
         for (Spell ability : abilities) {
-            JButton abilityButton = new JButton(ability.toString());
+            String abilityName = ability.getType();
+            int abilityDamage = ability.getDamageDone();
+            int abilityManaCost = ability.getManaCost();
+
+            JPanel abilityCard = new JPanel(new GridLayout(3, 1));
+            abilityCard.add(new JLabel(abilityName));
+            abilityCard.add(new JLabel("Damage: " + abilityDamage));
+            abilityCard.add(new JLabel("Mana Cost: " + abilityManaCost));
+
+            JButton abilityButton = new JButton();
+
+            abilityButton.add(abilityCard);
             abilityButton.addActionListener(e -> useAbility(ability));
             abilitiesPanel.add(abilityButton);
+
+            if (abilityName.contains("Fire")) {
+                abilityButton.setBackground(Color.RED);
+                abilityCard.setBackground(Color.RED);
+            } else if (abilityName.contains("Ice")) {
+                abilityButton.setBackground(Color.CYAN);
+                abilityCard.setBackground(Color.CYAN);
+            } else if (abilityName.contains("Earth")) {
+                abilityButton.setBackground(Color.ORANGE);
+                abilityCard.setBackground(Color.ORANGE);
+            }
         }
 
         add(abilitiesPanel, BorderLayout.CENTER);
@@ -46,7 +69,19 @@ public class AbilitiesPage extends JDialog {
         battlePage.updateEnemyStats();
         if (enemy.getHealth() <= 0) {
             JOptionPane.showMessageDialog(this, "Ai invins inamicul!");
-            controller.showGamePage(playerCharacter);
+
+            Random rand = new Random();
+            int randXp = rand.nextInt(30) + 1; // 1 - 30
+            playerCharacter.setHealth(playerCharacter.getHealth() * 2);
+            playerCharacter.setMana(playerCharacter.getMaxMana());
+            playerCharacter.setExperience(playerCharacter.getExperience() + randXp);
+            playerCharacter.enemiesKilled++;
+
+            if (playerCharacter.getHealth() > 200) {
+                playerCharacter.setHealth(200);
+            }
+
+            controller.showGamePage(playerCharacter, controller.getCurrentGrid());
             return;
         }
 
@@ -63,14 +98,26 @@ public class AbilitiesPage extends JDialog {
         battlePage.updateEnemyStats();
         if (enemy.getHealth() <= 0) {
             JOptionPane.showMessageDialog(this, "Ai invins inamicul!");
-            controller.showGamePage(playerCharacter);
+
+            Random rand = new Random();
+            int randXp = rand.nextInt(30) + 1; // 1 - 30
+            playerCharacter.setHealth(playerCharacter.getHealth() * 2);
+            playerCharacter.setMana(playerCharacter.getMaxMana());
+            playerCharacter.setExperience(playerCharacter.getExperience() + randXp);
+            playerCharacter.enemiesKilled++;
+
+            if (playerCharacter.getHealth() > 200) {
+                playerCharacter.setHealth(200);
+            }
+
+            controller.showGamePage(playerCharacter, controller.getCurrentGrid());
             return;
         }
 
         battlePage.updateCharacterStats();
         if (playerCharacter.getHealth() <= 0) {
             JOptionPane.showMessageDialog(this, "Ai pierdut!");
-            controller.showFinalPage();
+            controller.showFinalPage(playerCharacter);
             return;
         }
 

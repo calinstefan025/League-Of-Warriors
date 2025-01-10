@@ -17,11 +17,11 @@ public class GamePage extends JPanel {
 
     private boolean isInitialCell = true;
 
-    public GamePage(GameController controller, Character playerCharacter) {
+    public GamePage(GameController controller, Character playerCharacter, Grid grid) {
         this.controller = controller;
         this.game = Game.getInstance();
         this.playerCharacter = playerCharacter;
-        this.grid = game.getGrid();
+        this.grid = grid;
         grid.setPlayerCharacter(playerCharacter);
 
         setLayout(new BorderLayout(10, 10));
@@ -41,6 +41,7 @@ public class GamePage extends JPanel {
         detailsPanel.add(experienceLabel);
         detailsPanel.add(healthLabel);
         detailsPanel.add(manaLabel);
+        detailsPanel.setBorder(BorderFactory.createTitledBorder("Character Details"));
 
         rightPanel.add(detailsPanel, BorderLayout.CENTER);
 
@@ -76,15 +77,17 @@ public class GamePage extends JPanel {
         rightButton.setFocusPainted(false);
         directionPanel.add(rightButton);
 
+        directionPanel.setBorder(BorderFactory.createTitledBorder("Directions"));
+
         rightPanel.add(directionPanel, BorderLayout.SOUTH);
 
         add(rightPanel, BorderLayout.EAST);
 
-        initializeGrid();
+        drawGrid();
         updateCharacterDetails();
     }
 
-    private void initializeGrid() {
+    private void drawGrid() {
         gridPanel.removeAll();
         gridPanel.setLayout(new GridLayout(grid.rows, grid.cols, 2, 2));
 
@@ -126,7 +129,7 @@ public class GamePage extends JPanel {
                         regenerateAtSanctuary();
                     } else if (cell.getType() == CellEntityType.ENEMY) {
                         Enemy enemy = grid.generateEnemy();
-                        controller.showBattlePage(playerCharacter, enemy);
+                        controller.showBattlePage(playerCharacter, enemy, grid);
                     }
                     cellButton.setText(getCellDisplayText(cell));
                     cellButton.setBackground(Color.ORANGE);
@@ -164,11 +167,18 @@ public class GamePage extends JPanel {
         int rows = random.nextInt(6) + 5;
         int cols = random.nextInt(6) + 5;
         grid = Grid.generateGrid(rows, cols, false);
+        game.setGrid(grid);
         grid.setPlayerCharacter(playerCharacter);
 
-        JOptionPane.showMessageDialog(this, "You reached a portal! The map has been regenerated!", "Portal Reached", JOptionPane.INFORMATION_MESSAGE);
+        playerCharacter.levelUp();
 
-        initializeGrid();
+        JOptionPane.showMessageDialog(this,
+                "Ai ajuns la un portal! Ai trecut la nivelul urmator!\n" +
+                        "Nivel: " + playerCharacter.getLevel() + "\n" +
+                        "Experienta: " + playerCharacter.getExperience() + "\n"
+        );
+
+        drawGrid();
         updateCharacterDetails();
     }
 

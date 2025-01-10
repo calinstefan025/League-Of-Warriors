@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class BattlePage extends JPanel {
     private GameController controller;
@@ -20,10 +21,11 @@ public class BattlePage extends JPanel {
 
     private JPanel abilityPanel = new JPanel();
 
-    public BattlePage(GameController controller, Character playerCharacter, Enemy enemy) {
+    public BattlePage(GameController controller, Character playerCharacter, Enemy enemy, Grid grid) {
         this.controller = controller;
         this.playerCharacter = playerCharacter;
         this.enemy = enemy;
+        this.grid = grid;
 
 
         playerCharacter.setAbilities(playerCharacter.generateAbilities());
@@ -110,7 +112,19 @@ public class BattlePage extends JPanel {
         updateEnemyStats();
         if (enemy.getHealth() <= 0) {
             JOptionPane.showMessageDialog(this, "Ai invins inamicul!");
-            controller.showGamePage(playerCharacter);
+
+            Random rand = new Random();
+            int randXp = rand.nextInt(30) + 1; // 1 - 30
+            playerCharacter.setHealth(playerCharacter.getHealth() * 2);
+            playerCharacter.setMana(playerCharacter.getMaxMana());
+            playerCharacter.setExperience(playerCharacter.getExperience() + randXp);
+            playerCharacter.enemiesKilled++;
+
+            if (playerCharacter.getHealth() > 200) {
+                playerCharacter.setHealth(200);
+            }
+
+            controller.showGamePage(playerCharacter, grid);
             return;
         }
 
@@ -127,14 +141,26 @@ public class BattlePage extends JPanel {
         updateEnemyStats();
         if (enemy.getHealth() <= 0) {
             JOptionPane.showMessageDialog(this, "Ai invins inamicul!");
-            controller.showGamePage(playerCharacter);
+
+            Random rand = new Random();
+            int randXp = rand.nextInt(30) + 1; // 1 - 30
+            playerCharacter.setHealth(playerCharacter.getHealth() * 2);
+            playerCharacter.setMana(playerCharacter.getMaxMana());
+            playerCharacter.setExperience(playerCharacter.getExperience() + randXp);
+            playerCharacter.enemiesKilled++;
+
+            if (playerCharacter.getHealth() > 200) {
+                playerCharacter.setHealth(200);
+            }
+
+            controller.showGamePage(playerCharacter, grid);
             return;
         }
 
         updateCharacterStats();
         if (playerCharacter.getHealth() <= 0) {
             JOptionPane.showMessageDialog(this, "Ai pierdut!");
-            controller.showFinalPage();
+            controller.showFinalPage(playerCharacter);
             return;
         }
 
@@ -158,12 +184,12 @@ public class BattlePage extends JPanel {
         enemyAbilities = enemy.getAbilities();
 
         JLabel emptyLabel = new JLabel();
-        JLabel playerAbilityLabel = new JLabel("Player abilities:");
+        JLabel playerAbilityLabel = new JLabel("Player abilities:" , SwingConstants.CENTER);
         abilityPanel.add(playerAbilityLabel);
 
         for (Spell ability : playerAbilities) {
             String abilityName = removeColorCodes(ability);
-            JLabel abilityLabel1 = new JLabel(abilityName);
+            JLabel abilityLabel1 = new JLabel(abilityName , SwingConstants.CENTER);
             if (abilityName.contains("Fire")) {
                 abilityLabel1.setForeground(Color.RED);
             } else if (abilityName.contains("Ice")) {
@@ -176,12 +202,12 @@ public class BattlePage extends JPanel {
 
         abilityPanel.add(emptyLabel);
 
-        JLabel enemyAbilityLabel = new JLabel("Enemy abilities:");
+        JLabel enemyAbilityLabel = new JLabel("Enemy abilities:" , SwingConstants.CENTER);
         abilityPanel.add(enemyAbilityLabel);
 
         for (Spell ability : enemyAbilities) {
             String abilityName = removeColorCodes(ability);
-            JLabel abilityLabel2 = new JLabel(abilityName);
+            JLabel abilityLabel2 = new JLabel(abilityName, SwingConstants.CENTER);
             if (abilityName.contains("Fire")) {
                 abilityLabel2.setForeground(Color.RED);
             } else if (abilityName.contains("Ice")) {

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class GameController {
     private JFrame mainFrame;
@@ -66,43 +67,58 @@ public class GameController {
                         "Mana: " + character.getMana() + "\n" +
                         "Nivel: " + character.getLevel() + "\n" +
                         "Experienta: " + character.getExperience() + "\n");
-        // Caracterul selectat si avansam la gamepage cu el
-        showGamePage(character);
+
+        Grid grid = Game.getInstance().getGrid();
+        if (grid == null) {
+            grid = Grid.generateGrid(5, 5, true);
+            Game.getInstance().setGrid(grid);
+        }
+
+        grid.setPlayerCharacter(character);
+        showGamePage(character, grid);
     }
 
+    public Grid getCurrentGrid() {
+        return Game.getInstance().getGrid();
+    }
 
-    public void showGamePage(Character character) {
+    public void showGamePage(Character character, Grid grid) {
         mainFrame.setSize(1000, 700);
         mainFrame.getContentPane().removeAll();
-        GamePage gamePage = new GamePage(this, character);
+        GamePage gamePage = new GamePage(this, character, grid);
 
         mainFrame.add(gamePage);
         mainFrame.revalidate();
         mainFrame.repaint();
     }
 
-    public void showFinalPage() {
+    public void showFinalPage(Character playerCharacter) {
         mainFrame.setSize(400, 200);
         mainFrame.getContentPane().removeAll();
-        FinalPage finalPage = new FinalPage(this);
+        FinalPage finalPage = new FinalPage(this, playerCharacter);
 
         mainFrame.add(finalPage);
         mainFrame.revalidate();
         mainFrame.repaint();
     }
 
-    public void showBattlePage(Character player, Enemy enemy) {
+    public void showBattlePage(Character player, Enemy enemy, Grid grid) {
         if (player == null || enemy == null) {
-            throw new IllegalArgumentException("Player or enemy cannot be null.");
+            throw new IllegalArgumentException("Jucatorul sau inamicul nu pot fi nuli.");
         }
 
         mainFrame.setSize(1000, 700);
         mainFrame.getContentPane().removeAll();
-        BattlePage battlePage = new BattlePage(this , player, enemy);
+        BattlePage battlePage = new BattlePage(this , player, enemy, grid);
 
         mainFrame.add(battlePage);
         mainFrame.revalidate();
         mainFrame.repaint();
+    }
+
+    public void resetGameState() {
+        Game.reset();
+        this.currentAccount = null;
     }
 
     public static void main(String[] args) {

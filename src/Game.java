@@ -20,12 +20,7 @@ public class Game {
     private static Game instance = null;
 
     private Game() {
-        Random random = new Random();
         this.isRunning = true;
-        int rows = random.nextInt(6) + 5;
-        int cols = random.nextInt(6) + 5;
-        this.grid = Grid.generateGrid(5, 5, true);
-        grid.setPlayerCharacter(playerCharacter);
     }
 
     public static Game getInstance() {
@@ -37,6 +32,14 @@ public class Game {
 
     public Grid getGrid() {
         return grid;
+    }
+
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
+
+    public static void reset() {
+        instance = null;
     }
 
     public Character getPlayerCharacter() {

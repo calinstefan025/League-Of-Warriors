@@ -4,6 +4,8 @@ public abstract class Character extends Entity{
     private int level;
     private int strength , dexterity , charisma;
 
+    public int enemiesKilled = 0;
+
     public Character(String name, boolean immuneToFire, boolean immuneToIce, boolean immuneToEarth) {
         super(immuneToFire, immuneToIce, immuneToEarth);
         this.characterName = name;
